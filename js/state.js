@@ -1,4 +1,4 @@
-// Objek state tunggal permainan PULSE LOCK
+// Objek state tunggal permainan PALse lock
 import {
   DIR_CW,
   ENERGY_MAX,

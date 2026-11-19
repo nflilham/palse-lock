@@ -1,8 +1,8 @@
-# PRD.md — PULSE LOCK
+# PRD.md — PALse lock
 
 ## 1. Visi Produk
 
-PULSE LOCK adalah game arcade refleks-ritme berbasis browser. Pemain mengunci kursor yang mengorbit 360° tepat di atas zona target melengkung. Satu sesi bermain berlangsung 30–120 detik, dengan tekanan tempo dari bar energi yang terus menyusut. Game gratis, statis, tanpa akun, tanpa backend, dan di-deploy ke Netlify.
+PALse lock adalah game arcade refleks-ritme berbasis browser. Pemain mengunci kursor yang mengorbit 360° tepat di atas zona target melengkung. Satu sesi bermain berlangsung 30–120 detik, dengan tekanan tempo dari bar energi yang terus menyusut. Game gratis, statis, tanpa akun, tanpa backend, dan di-deploy ke Netlify.
 
 ## 2. Target Pemain
 
@@ -84,7 +84,7 @@ Jarak minimum 90° menjamin jeda reaksi minimal sekitar 0.5 detik pada kecepatan
 - `mult = min(1 + 0.5 * level, 4.0)`, memakai `level` sebelum combo bertambah.
 - `score += round(skorDasar * mult)`.
 - Contoh: combo saat ini 10 (`level = 2`, `mult = 2.0`), PERFECT menghasilkan `200` poin.
-- High score disimpan di `localStorage` kunci `pulselock.highscore.v1`.
+- High score disimpan di `localStorage` kunci `palselock.highscore.v1`.
 
 ## 5. Functional Requirements
 

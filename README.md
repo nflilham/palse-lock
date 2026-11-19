@@ -1,9 +1,9 @@
-# PULSE LOCK
+# PALse lock
 
 > **OUTRUN THE FADING LIGHT**  
 > Game arcade refleks-ritme berbasis browser bergaya **Crystal Shadow** — tanpa aset gambar/audio eksternal, tanpa framework, dan tanpa build step.
 
-[![Live Demo](https://img.shields.io/badge/Play%20Now-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://pulse-lock-qqsy.netlify.app)
+[![Live Demo](https://img.shields.io/badge/Play%20Now-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://palse-lock.netlify.app)
 ![Vanilla JS](https://img.shields.io/badge/Vanilla%20JS-ES%20Modules-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-Play%20CDN-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Web Audio API](https://img.shields.io/badge/Audio-Web%20Audio%20API-C84BFF?style=for-the-badge)
@@ -12,7 +12,7 @@
 
 ## Mainkan Sekarang
 
-- **Live (Netlify):** https://pulse-lock-qqsy.netlify.app
+- **Live (Netlify):** https://palse-lock.netlify.app
 
 ---
 
@@ -59,8 +59,8 @@
 Proyek menggunakan ES Modules native sehingga perlu dijalankan lewat server HTTP lokal (bukan membuka `index.html` langsung via `file://`):
 
 ```bash
-git clone https://github.com/nflilham/pulse-lock.git
-cd pulse-lock
+git clone https://github.com/nflilham/palse-lock.git
+cd palse-lock
 python -m http.server 8000
 ```
 
@@ -71,7 +71,7 @@ Lalu buka `http://localhost:8000` di browser modern (Chrome, Edge, Firefox, atau
 ## Arsitektur Proyek
 
 ```text
-pulse-lock/
+palse-lock/
 ├── index.html          # Markup, konfigurasi Tailwind Play CDN, token tema & SVG stage
 ├── netlify.toml        # Konfigurasi deploy statis (publish = ".")
 ├── docs/               # PRD, spesifikasi desain Crystal Shadow, dan checklist tugas

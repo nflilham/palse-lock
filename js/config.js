@@ -1,4 +1,4 @@
-// Semua konstanta mekanik, geometri, audio, dan state PULSE LOCK
+// Semua konstanta mekanik, geometri, audio, dan state PALse lock
 
 // Toleransi sudut penilaian (derajat)
 export const PERFECT_TOL = 8;
@@ -61,7 +61,7 @@ export const SHARD_DIST_GOOD = 24;
 export const FLIP_WIPE_MID_MS = 150;
 
 // Penyimpanan lokal
-export const HIGHSCORE_KEY = 'pulselock.highscore.v1';
+export const HIGHSCORE_KEY = 'palselock.highscore.v1';
 
 // Spesifikasi Web Audio API (DESIGN.md bagian 6)
 export const AUDIO_MASTER_GAIN = 0.3;

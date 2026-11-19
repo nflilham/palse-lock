@@ -1,15 +1,15 @@
-# DESIGN.md — PULSE LOCK (Revisi: gaya "Crystal Shadow")
+# DESIGN.md — PALse lock (Revisi: gaya "Crystal Shadow")
 
 ## 1. Prinsip Desain dan Referensi Visual
 
 Arah visual: dunia kristal bersudut yang diterangi cahaya di tengah bayangan. Semua bentuk bersudut tajam (low-poly) kecuali ring orbit, yang melengkung karena itu inti mekanik. Tanpa aset eksternal: visual lewat SVG inline, CSS, dan kelas Tailwind; audio lewat Web Audio API.
 
-| Elemen di gambar referensi | Ciri                                                                      | Penerapan di PULSE LOCK                                                      |
+| Elemen di gambar referensi | Ciri                                                                      | Penerapan di PALse lock                                                      |
 | -------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | Latar                      | Gradasi biru di atas, cyan terang berkabut di tengah, ungu gelap di bawah | Latar 2 lapis gradien (Normal dan Flip) dengan kabut radial dan sinar lembut |
 | Bentuk umum                | Serpihan kristal bersudut, tanpa lengkung                                 | Panel, tombol, chip HUD, dan bar energi memakai `clip-path: polygon()`       |
 | Panel gelap pusat          | Poligon navy-hitam dengan tepi magenta dan ungu berlapis (offset)         | Papan permainan (board) di belakang ring orbit                               |
-| Judul                      | Huruf mint pucat, bersudut, tinggi-rendah tidak seragam                   | Judul "PULSE LOCK" dengan huruf berselisih posisi dan rotasi tetap           |
+| Judul                      | Huruf mint pucat, bersudut, tinggi-rendah tidak seragam                   | Judul "PALse lock" dengan huruf berselisih posisi dan rotasi tetap           |
 | Subjudul                   | Cyan terang, miring, tersusun bertumpuk                                   | Tagline 3 baris, miring `-6deg`, di pojok kanan bawah panel judul            |
 | Bola kristal               | Bola bercahaya dengan facet bintang                                       | Kursor orbit                                                                 |
 | Siluet batu                | Bentuk ungu gelap di bagian bawah                                         | Dua siluet poligon di pojok bawah layar                                      |
@@ -138,7 +138,7 @@ Font: **Chakra Petch** (Google Fonts, bobot 500/600/700), satu-satunya sumber ek
 
 | Elemen                   | Kelas / gaya                                                                                                                                                      |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Judul "PULSE" dan "LOCK" | `font-display font-bold uppercase text-6xl sm:text-7xl leading-[0.9] tracking-wider text-perfect`, tiap huruf `inline-block` dengan offset tetap (lihat di bawah) |
+| Judul "PALse" dan "lock" | `font-display font-bold text-6xl sm:text-7xl leading-[0.9] tracking-wider text-perfect`, tiap huruf `inline-block` dengan offset tetap (lihat di bawah) |
 | Tagline                  | `font-display font-bold uppercase text-accent text-lg sm:text-xl leading-tight -skew-x-6 -rotate-6`                                                               |
 | Skor                     | `font-display font-bold tabular-nums text-2xl sm:text-3xl text-perfect`                                                                                           |
 | Label HUD                | `font-display font-medium text-xs uppercase tracking-widest text-accent`                                                                                          |
@@ -247,7 +247,7 @@ Aturan: `math.js` dan `game.js` tidak menyentuh DOM. `render.js` dan `fx.js` han
 
 | State     | Tampilan                                                                                                                                                                                                                                                                                                              |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| MENU      | Komposisi seperti sampul: panel `.facet-panel` gelap bertepi magenta-ungu berlapis di tengah, "PULSE" dan "LOCK" bertumpuk dengan huruf berselisih, tagline miring di pojok kanan bawah panel (menimpa tepi panel), chip high score, tombol "MULAI" berfaset, petunjuk kontrol. Bola kristal berdenyut di bawah judul |
+| MENU      | Komposisi seperti sampul: panel `.facet-panel` gelap bertepi magenta-ungu berlapis di tengah, "PALse" dan "lock" bertumpuk dengan huruf berselisih, tagline miring di pojok kanan bawah panel (menimpa tepi panel), chip high score, tombol "MULAI" berfaset, petunjuk kontrol. Bola kristal berdenyut di bawah judul |
 | PLAYING   | HUD tiga chip, bar energi, stage, petunjuk "SPASI / TAP"                                                                                                                                                                                                                                                              |
 | PAUSED    | `--scrim` penuh layar, panel kecil dengan tombol "LANJUT" dan teks "Esc"                                                                                                                                                                                                                                              |
 | GAME_OVER | Panel `.facet-panel`: teks "LIGHT FADED", skor akhir, combo maksimum, high score (label "BARU" berfaset jika memecahkan rekor), tombol "MAIN LAGI"                                                                                                                                                                    |

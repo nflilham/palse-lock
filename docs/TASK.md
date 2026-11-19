@@ -1,4 +1,4 @@
-# TASK.md — PULSE LOCK
+# TASK.md — PALse lock
 
 Aturan umum: kerjakan berurutan per milestone. Tiap tugas selesai hanya jika seluruh Acceptance Criteria (AC) terpenuhi. Acuan nilai ada di `PRD.md` dan `DESIGN.md`.
 
