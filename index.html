@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="id" data-theme="normal" data-paused="false">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PULSE LOCK</title>
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "var(--ink)",
+            "ink-2": "var(--ink-2)",
+            rim: "var(--rim)",
+            "rim-2": "var(--rim-2)",
+            accent: "var(--accent)",
+            perfect: "var(--perfect)",
+            danger: "var(--danger)",
+            muted: "var(--text-muted)",
+          },
+          fontFamily: {
+            display: ['"Chakra Petch"', "ui-monospace", "monospace"],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* Palet warna Crystal Shadow sesuai DESIGN.md bagian 3.1 (tanpa hex di luar blok ini) */
+    :root {
+      --sky-top: #090D2E;
+      --sky-mid: #11225A;
+      --sky-bot: #0B1238;
+      --sky-haze: rgba(34, 211, 245, 0.22);
+      --shadow-top: #1F0945;
+      --shadow-mid: #4A188C;
+      --shadow-bot: #2D0C5E;
+      --shadow-haze: rgba(226, 75, 240, 0.28);
+      --rock-fill: #1B0F6B;
+      --rock-edge: #5B2FD6;
+      --vignette-edge: rgba(10, 6, 36, 0.75);
+      --ray-white: rgba(244, 251, 255, 0.85);
+      --flame-outer: #7B1FF2;
+      --flame-mid: #C84BFF;
+      --flame-core: #F6CCFF;
+      --flame-glow: rgba(184, 59, 245, 0.58);
+      --flame-blue-outer: #1A5BFF;
+      --flame-blue-mid: #22D3F5;
+      --flame-blue-core: #D8F8FF;
+      --flame-blue-glow: rgba(34, 211, 245, 0.56);
+    }
+
+    :root[data-theme="normal"] {
+      --bg-top: #2352D8;
+      --bg-mid: #3FA8E8;
+      --bg-bot: #3A1C9E;
+      --haze: rgba(190, 240, 255, 0.55);
+      --ink: #0B0A2E;
+      --ink-2: #15124A;
+      --scrim: rgba(11, 10, 46, 0.82);
+      --rim: #D63BDB;
+      --rim-2: #5B2FD6;
+      --accent: #22D3F5;
+      --accent-glow: rgba(34, 211, 245, 0.55);
+      --perfect: #C8F2E4;
+      --text: #F4FBFF;
+      --text-muted: #8FB8E8;
+      --danger: #FF3D8B;
+    }
+
+    :root[data-theme="flip"] {
+      --bg-top: #1A0B5E;
+      --bg-mid: #6A2BD9;
+      --bg-bot: #8A1FA8;
+      --haze: rgba(240, 150, 255, 0.45);
+      --ink: #0A0624;
+      --ink-2: #1A0E4F;
+      --scrim: rgba(10, 6, 36, 0.82);
+      --rim: #22D3F5;
+      --rim-2: #2B6BE8;
+      --accent: #E24BF0;
+      --accent-glow: rgba(226, 75, 240, 0.55);
+      --perfect: #C8F2E4;
+      --text: #F4FBFF;
+      --text-muted: #C9A8F5;
+      --danger: #F4FBFF;
+    }
+
+    html {
+      background-color: var(--ink);
+    }
+
+    html,
+    body {
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    /* Latar 2 lapis gradien dengan crossfade 300ms (bagian 2.4) */
+    #bg-normal {
+      background:
+        radial-gradient(60% 40% at 45% 55%, var(--sky-haze) 0%, transparent 70%),
+        linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-bot) 100%);
+    }
+
+    #bg-flip {
+      background:
+        radial-gradient(60% 40% at 45% 55%, var(--shadow-haze) 0%, transparent 70%),
+        linear-gradient(180deg, var(--shadow-top) 0%, var(--shadow-mid) 45%, var(--shadow-bot) 100%);
+      opacity: 0;
+      transition: opacity 300ms ease-in-out;
+    }
+
+    :root[data-theme="flip"] #bg-flip {
+      opacity: 1;
+    }
+
+    /* 2 pita sinar diagonal bernapas 6 detik */
+    .bg-ray {
+      background: linear-gradient(180deg, transparent 0%, var(--ray-white) 50%, transparent 100%);
+      transform-origin: center;
+      animation: ray-breathe 6s ease-in-out infinite;
+    }
+
+    .bg-ray-2 {
+      animation-delay: -3s;
+    }
+
+    @keyframes ray-breathe {
+      0%, 100% { opacity: 0.10; }
+      50% { opacity: 0.14; }
+    }
+
+    /* 6 segitiga latar melayang pelan (14-22s linear) */
+    @keyframes facet-float {
+      0%, 100% { transform: translateY(-12px) rotate(-8deg); }
+      50% { transform: translateY(12px) rotate(8deg); }
+    }
+
+    .bg-float {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: facet-float 16s linear infinite;
+    }
+    .bg-float-2 { animation-duration: 18s; animation-delay: -4s; }
+    .bg-float-3 { animation-duration: 14s; animation-delay: -7s; }
+    .bg-float-4 { animation-duration: 20s; animation-delay: -2s; }
+    .bg-float-5 { animation-duration: 22s; animation-delay: -11s; }
+    .bg-float-6 { animation-duration: 15s; animation-delay: -9s; }
+
+    /* Jeda animasi ambient saat PAUSED */
+    :root[data-paused="true"] .bg-float,
+    :root[data-paused="true"] .bg-ray {
+      animation-play-state: paused;
+    }
+
+    /* Sembunyikan siluet batu di layar pendek (< 560px) */
+    @media (max-height: 559px) {
+      #fg-rocks {
+        display: none;
+      }
+    }
+
+    /* Bentuk faset clip-path sesuai DESIGN.md bagian 3.3 */
+    .facet-cut {
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    }
+
+    .facet-skew {
+      clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    }
+
+    .facet-panel {
+      clip-path: polygon(0 4%, 6% 0, 100% 3%, 97% 100%, 3% 96%);
+    }
+
+    /* Drop-shadow hanya pada elemen statis (pembungkus tombol & rim papan) */
+    .static-glow {
+      filter: drop-shadow(0 0 10px var(--accent-glow));
+    }
+
+    /* Transisi warna tema 300ms */
+    .theme-trans,
+    svg * {
+      transition: stroke 300ms, fill 300ms, color 300ms, background-color 300ms;
+    }
+
+    /* Offset deterministik huruf judul PULSE / LOCK (bagian 3.2) */
+    .t-char { display: inline-block; }
+    .t-1 { transform: translateY(0px) rotate(-3deg); }
+    .t-2 { transform: translateY(-6px) rotate(2deg); }
+    .t-3 { transform: translateY(4px) rotate(-2deg); }
+    .t-4 { transform: translateY(-3px) rotate(3deg); }
+    .t-5 { transform: translateY(5px) rotate(-1deg); }
+
+    /* Bar energi dengan scaleX (bagian 3.4) */
+    #energy-fill {
+      background: linear-gradient(90deg, var(--accent), var(--perfect));
+      transform: scaleX(1);
+    }
+
+    #energy-fill.is-low-bar {
+      background: var(--danger);
+      animation: low-pulse 600ms ease-in-out infinite;
+    }
+
+    @keyframes low-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Vignette energi rendah */
+    #vignette {
+      background: radial-gradient(transparent 55%, var(--vignette-edge) 100%);
+      opacity: 0;
+    }
+
+    #vignette.is-low-vignette {
+      animation: vignette-pulse 600ms ease-in-out infinite;
+    }
+
+    @keyframes vignette-pulse {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Overlay scrim berbasis token */
+    .overlay-scrim {
+      background-color: var(--scrim);
+    }
+
+    /* Micro-interactions (transform & opacity saja, bagian 4) */
+    #orbit-ring,
+    #hit-ripple {
+      transform-origin: 200px 200px;
+    }
+
+    #cursor-orb {
+      transform-origin: 200px 50px;
+    }
+
+    @keyframes hit-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes hit-ripple {
+      0% { transform: scale(1); opacity: 0.7; }
+      100% { transform: scale(1.24); opacity: 0; }
+    }
+
+    @keyframes orb-pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.5); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shard-burst {
+      0% {
+        opacity: 0.95;
+        transform: translate(var(--sx), var(--sy)) rotate(0deg) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(var(--sx) + var(--dx)), calc(var(--sy) + var(--dy))) rotate(var(--rot)) scale(0.4);
+      }
+    }
+
+    @keyframes miss-shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-6px); }
+      80% { transform: translateX(6px); }
+      100% { transform: translateX(0); }
+    }
+
+    @keyframes miss-flash {
+      0% { opacity: 0.18; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes cracks-fade {
+      0% { opacity: 0.9; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes flip-wipe {
+      0% { opacity: 0.92; transform: translateX(-120%) skewX(-12deg); }
+      50% { opacity: 0.96; transform: translateX(0%) skewX(-12deg); }
+      100% { opacity: 0.92; transform: translateX(120%) skewX(-12deg); }
+    }
+
+    /* Transisi api low-poly bergerak: biru di kelipatan 5x, ungu di kelipatan 10x (transform & opacity saja) */
+    #purple-flame,
+    #stage-flame {
+      opacity: 0;
+      transform-origin: center bottom;
+    }
+
+    .flame-blue {
+      --flame-outer: var(--flame-blue-outer);
+      --flame-mid: var(--flame-blue-mid);
+      --flame-core: var(--flame-blue-core);
+      --flame-glow: var(--flame-blue-glow);
+    }
+
+    #purple-flame {
+      background:
+        radial-gradient(28% 85% at 0% 70%, var(--flame-glow) 0%, transparent 75%),
+        radial-gradient(28% 85% at 100% 70%, var(--flame-glow) 0%, transparent 75%),
+        radial-gradient(90% 35% at 50% 100%, var(--flame-glow) 0%, transparent 75%);
+    }
+
+    #stage-flame {
+      transform-origin: 200px 360px;
+    }
+
+    .flame-l1,
+    .flame-l2,
+    .flame-l3 {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+    }
+
+    .flame-spark {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    @keyframes purple-flame-envelope {
+      0% { opacity: 0; transform: translateY(12%) scaleY(0.82); }
+      16% { opacity: 1; transform: translateY(0%) scaleY(1.04); }
+      72% { opacity: 0.94; transform: translateY(-2%) scaleY(1.01); }
+      100% { opacity: 0; transform: translateY(-8%) scaleY(0.94); }
+    }
+
+    @keyframes flame-lick-1 {
+      0% { transform: scaleY(0.86) skewX(-3deg); }
+      25% { transform: scaleY(1.14) skewX(3deg); }
+      50% { transform: scaleY(0.94) skewX(-4deg); }
+      75% { transform: scaleY(1.1) skewX(2deg); }
+      100% { transform: scaleY(0.88) skewX(-2deg); }
+    }
+
+    @keyframes flame-lick-2 {
+      0% { transform: scaleY(0.92) skewX(4deg) translateY(6px); }
+      25% { transform: scaleY(1.18) skewX(-4deg) translateY(-6px); }
+      50% { transform: scaleY(0.96) skewX(5deg) translateY(3px); }
+      75% { transform: scaleY(1.15) skewX(-3deg) translateY(-8px); }
+      100% { transform: scaleY(0.85) skewX(2deg) translateY(-12px); }
+    }
+
+    @keyframes flame-lick-3 {
+      0% { transform: scaleY(0.8) skewX(-5deg); opacity: 0.7; }
+      30% { transform: scaleY(1.22) skewX(5deg); opacity: 1; }
+      60% { transform: scaleY(0.9) skewX(-4deg); opacity: 0.85; }
+      85% { transform: scaleY(1.16) skewX(4deg); opacity: 0.95; }
+      100% { transform: scaleY(0.75) skewX(0deg); opacity: 0; }
+    }
+
+    @keyframes flame-spark-rise {
+      0% { opacity: 0; transform: translate(0, 18px) rotate(0deg) scale(0.7); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--fx, 0px), -95px) rotate(var(--fr, 45deg)) scale(0.35); }
+    }
+
+    @keyframes judge-pop {
+      0% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, -12px); }
+    }
+
+    @keyframes gameover-slide {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes menu-orb-pulse {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.12); opacity: 1; }
+    }
+
+    .is-hit { animation: hit-pulse 160ms ease-out; }
+    .is-ripple-perfect { stroke: var(--perfect); animation: hit-ripple 300ms ease-out; }
+    .is-ripple-good { stroke: var(--accent); animation: hit-ripple 240ms ease-out; }
+    .is-orb-pop { animation: orb-pop 140ms ease-out; }
+    .is-shard-burst { animation: shard-burst 320ms ease-out; }
+    .is-miss { animation: miss-shake 240ms linear; }
+    .is-flash { animation: miss-flash 80ms linear; }
+    .is-cracks { animation: cracks-fade 240ms linear; }
+    .is-wipe { animation: flip-wipe 300ms ease-in-out; }
+    .is-purple-flame { animation: purple-flame-envelope 650ms ease-out; }
+    .is-purple-flame .flame-l1 { animation: flame-lick-1 320ms ease-in-out 2; }
+    .is-purple-flame .flame-l2 { animation: flame-lick-2 280ms ease-in-out 2; }
+    .is-purple-flame .flame-l3 { animation: flame-lick-3 240ms ease-in-out 2; }
+    .is-purple-flame .flame-spark { animation: flame-spark-rise 620ms ease-out; }
+    .is-judge-pop { animation: judge-pop 300ms ease-out; }
+    .is-gameover-slide { animation: gameover-slide 250ms ease-out; }
+    .menu-orb { animation: menu-orb-pulse 2.2s ease-in-out infinite; }
+
+    /* prefers-reduced-motion sesuai DESIGN.md bagian 4 */
+    @media (prefers-reduced-motion: reduce) {
+      .is-hit,
+      .is-orb-pop,
+      .is-shard-burst,
+      .is-miss,
+      .is-wipe,
+      .is-gameover-slide,
+      .bg-float,
+      .bg-ray,
+      .menu-orb {
+        animation: none !important;
+      }
+
+      @keyframes hit-ripple-fade {
+        0% { opacity: 0.7; }
+        100% { opacity: 0; }
+      }
+      @keyframes purple-flame-fade {
+        0% { opacity: 0; }
+        30% { opacity: 0.65; }
+        100% { opacity: 0; }
+      }
+      .is-ripple-perfect { animation: hit-ripple-fade 300ms ease-out !important; }
+      .is-ripple-good { animation: hit-ripple-fade 240ms ease-out !important; }
+      .is-purple-flame { animation: purple-flame-fade 320ms ease-out !important; }
+      .is-purple-flame .flame-l1,
+      .is-purple-flame .flame-l2,
+      .is-purple-flame .flame-l3,
+      .is-purple-flame .flame-spark { animation: none !important; }
+    }
+  </style>
+</head>
+<body class="font-display antialiased select-none">
+  <!-- 1. Latar 2 lapis gradien, 14+6 poligon dekoratif, 2 pita sinar -->
+  <div id="bg" class="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+    <div id="bg-normal" class="absolute inset-0"></div>
+    <div id="bg-flip" class="absolute inset-0"></div>
+
+    <!-- 2 pita sinar diagonal -->
+    <div id="bg-rays" class="absolute inset-0 overflow-hidden">
+      <div class="bg-ray absolute -top-1/4 left-[18%] h-[160%] w-24 -rotate-[26deg]"></div>
+      <div class="bg-ray bg-ray-2 absolute -top-1/4 right-[20%] h-[160%] w-32 -rotate-[26deg]"></div>
+    </div>
+
+    <!-- 14 segitiga statis + 6 segitiga melayang pelan -->
+    <svg id="bg-facets" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" class="absolute inset-0 h-full w-full">
+      <!-- 14 statis -->
+      <polygon points="0,0 24,0 8,22" fill="var(--text)" opacity="0.06" />
+      <polygon points="24,0 52,0 32,18" fill="var(--accent)" opacity="0.08" />
+      <polygon points="68,0 100,0 84,26" fill="var(--text)" opacity="0.05" />
+      <polygon points="0,26 16,44 0,62" fill="var(--accent)" opacity="0.07" />
+      <polygon points="88,22 100,42 78,48" fill="var(--text)" opacity="0.06" />
+      <polygon points="12,56 28,74 4,82" fill="var(--text)" opacity="0.05" />
+      <polygon points="72,62 94,76 76,90" fill="var(--accent)" opacity="0.08" />
+      <polygon points="38,8 56,24 44,32" fill="var(--text)" opacity="0.04" />
+      <polygon points="56,74 74,88 52,96" fill="var(--text)" opacity="0.06" />
+      <polygon points="22,82 42,96 18,100" fill="var(--accent)" opacity="0.07" />
+      <polygon points="80,8 96,18 86,30" fill="var(--accent)" opacity="0.09" />
+      <polygon points="4,12 18,20 10,32" fill="var(--text)" opacity="0.07" />
+      <polygon points="62,14 76,22 66,34" fill="var(--text)" opacity="0.05" />
+      <polygon points="34,76 48,84 36,94" fill="var(--text)" opacity="0.04" />
+
+      <!-- 6 melayang pelan -->
+      <polygon class="bg-float" points="14,34 21,40 12,44" fill="var(--accent)" opacity="0.10" />
+      <polygon class="bg-float bg-float-2" points="82,36 89,44 79,47" fill="var(--text)" opacity="0.09" />
+      <polygon class="bg-float bg-float-3" points="26,18 32,25 22,27" fill="var(--text)" opacity="0.08" />
+      <polygon class="bg-float bg-float-4" points="70,52 77,58 68,62" fill="var(--accent)" opacity="0.10" />
+      <polygon class="bg-float bg-float-5" points="18,68 25,73 16,78" fill="var(--text)" opacity="0.08" />
+      <polygon class="bg-float bg-float-6" points="84,68 91,75 81,78" fill="var(--accent)" opacity="0.09" />
+    </svg>
+  </div>
+
+  <!-- 2. Dua siluet batu ungu gelap di pojok bawah -->
+  <div id="fg-rocks" class="fixed bottom-0 inset-x-0 z-0 pointer-events-none h-[18dvh] max-h-[160px]" aria-hidden="true">
+    <svg viewBox="0 0 1000 180" preserveAspectRatio="none" class="h-full w-full">
+      <!-- Batu kiri -->
+      <polygon points="0,180 0,46 88,78 165,126 245,180" fill="var(--rock-fill)" />
+      <polyline points="0,46 88,78 165,126 245,180" fill="none" stroke="var(--rock-edge)" stroke-width="2" />
+      <!-- Batu kanan -->
+      <polygon points="1000,180 1000,32 905,68 835,120 745,180" fill="var(--rock-fill)" />
+      <polyline points="1000,32 905,68 835,120 745,180" fill="none" stroke="var(--rock-edge)" stroke-width="2" />
+    </svg>
+  </div>
+
+  <!-- 3. Aplikasi utama -->
+  <main id="app" class="relative z-10 min-h-[100dvh] w-full flex flex-col items-center justify-between text-[color:var(--text)] font-display">
+    <!-- 4. HUD tiga chip faset (SCORE, HIGH, MULT) -->
+    <header id="hud" class="w-full max-w-[560px] pt-[max(0.75rem,env(safe-area-inset-top))] px-4 sm:px-0 grid grid-cols-3 gap-2.5 sm:gap-4 text-sm sm:text-base">
+      <div class="facet-cut bg-rim p-[2px]">
+        <div class="facet-cut bg-ink px-3 py-2 flex flex-col">
+          <span class="font-medium text-[11px] uppercase tracking-widest text-accent">SCORE</span>
+          <span id="hud-score" class="font-bold tabular-nums text-2xl sm:text-3xl leading-tight text-perfect">0</span>
+        </div>
+      </div>
+
+      <div class="facet-cut bg-rim p-[2px]">
+        <div class="facet-cut bg-ink px-3 py-2 flex flex-col items-center">
+          <span class="font-medium text-[11px] uppercase tracking-widest text-accent">MULT</span>
+          <span id="hud-mult" class="font-bold tabular-nums text-2xl sm:text-3xl leading-tight text-perfect">x1.0</span>
+        </div>
+      </div>
+
+      <div class="facet-cut bg-rim p-[2px]">
+        <div class="facet-cut bg-ink px-3 py-2 flex flex-col items-end">
+          <span class="font-medium text-[11px] uppercase tracking-widest text-accent">HIGH</span>
+          <span id="hud-highscore" class="font-bold tabular-nums text-2xl sm:text-3xl leading-tight text-perfect">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 5. Bar energi faset (scaleX) -->
+    <section id="energy" aria-label="Energi" class="w-full max-w-[560px] px-4 sm:px-0 mt-2">
+      <div class="h-3 w-full facet-skew bg-ink-2 overflow-hidden">
+        <div id="energy-fill" class="h-full w-full origin-left"></div>
+      </div>
+    </section>
+
+    <!-- 6. Kontainer SVG stage persegi (12 lapisan sesuai DESIGN.md 2.3) -->
+    <section id="stage" class="relative my-auto flex items-center justify-center w-[min(92vw,70dvh)] sm:w-[min(520px,80dvh)] aspect-square touch-none transition-[opacity,transform] duration-250 ease-out">
+      <svg id="stage-svg" viewBox="0 0 400 400" class="h-full w-full overflow-visible" aria-hidden="true">
+        <defs>
+          <radialGradient id="cursor-halo-grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="var(--text)" stop-opacity="0.95" />
+            <stop offset="45%" stop-color="var(--accent)" stop-opacity="0.65" />
+            <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+
+        <!-- Aura api ungu di belakang & sekeliling papan poligon (tiap kelipatan 10x combo) -->
+        <g id="stage-flame" aria-hidden="true">
+          <g class="flame-l1" fill="var(--flame-outer)" opacity="0.9">
+            <!-- Kiri luar papan menjilat tinggi -->
+            <polygon points="36,335 -18,245 -32,125 -8,185 10,82 32,162 46,230" />
+            <!-- Kanan luar papan menjilat tinggi -->
+            <polygon points="364,335 418,245 432,120 408,182 390,78 368,162 354,230" />
+            <!-- Bawah papan membungkus tepi bawah -->
+            <polygon points="28,318 65,375 112,352 152,418 198,378 242,422 288,358 335,382 374,316 320,330 200,362 80,330" />
+          </g>
+          <g class="flame-l2" fill="var(--flame-mid)" opacity="0.92">
+            <polygon points="44,322 -6,238 -16,148 6,196 22,115 38,180 50,248" />
+            <polygon points="356,322 406,238 416,145 394,195 378,112 362,180 350,248" />
+            <polygon points="52,328 92,382 135,356 176,406 218,372 262,408 308,356 348,378 362,324 295,342 200,368 105,342" />
+          </g>
+          <g class="flame-l3" fill="var(--flame-core)" opacity="0.82">
+            <polygon points="40,305 4,228 10,165 26,205 38,255" />
+            <polygon points="360,305 396,228 390,165 374,205 362,255" />
+            <polygon points="88,342 130,382 172,362 208,396 248,364 290,382 320,340 200,364" />
+          </g>
+          <!-- Percikan bara api di sisi papan -->
+          <polygon class="flame-spark" style="--fx: -14px; --fr: -55deg;" points="-10,130 -2,112 6,132" fill="var(--flame-core)" />
+          <polygon class="flame-spark" style="--fx: 16px; --fr: 60deg;" points="396,128 404,108 412,130" fill="var(--flame-core)" />
+          <polygon class="flame-spark" style="--fx: -8px; --fr: -40deg;" points="22,95 28,80 34,97" fill="var(--flame-mid)" />
+          <polygon class="flame-spark" style="--fx: 10px; --fr: 45deg;" points="366,92 372,76 378,94" fill="var(--flame-mid)" />
+        </g>
+
+        <!-- Lapisan 1: Rim belakang offset (5, 4) -->
+        <polygon points="200,6 322,34 394,140 378,276 296,376 168,392 52,330 8,206 40,88" transform="translate(5,4)" fill="none" stroke="var(--rim-2)" stroke-width="3" stroke-linejoin="miter" />
+
+        <!-- Lapisan 2: Papan poligon utama -->
+        <polygon class="static-glow" points="200,6 322,34 394,140 378,276 296,376 168,392 52,330 8,206 40,88" fill="var(--ink)" stroke="var(--rim)" stroke-width="3" stroke-linejoin="miter" />
+
+        <!-- Lapisan 3: 5 facet statis di dalam papan -->
+        <g fill="var(--ink-2)" opacity="0.6">
+          <polygon points="200,12 318,38 200,200" />
+          <polygon points="388,142 372,272 200,200" />
+          <polygon points="292,370 170,386 200,200" />
+          <polygon points="56,326 14,206 200,200" />
+          <polygon points="44,92 200,12 200,200" opacity="0.45" />
+        </g>
+
+        <!-- Lapisan 4: Ring orbit -->
+        <circle id="orbit-ring" cx="200" cy="200" r="150" fill="none" stroke="var(--accent)" stroke-opacity="0.28" stroke-width="2" />
+
+        <!-- Lapisan 5: 12 tanda ring tiap 30° (r=128 ke r=136) -->
+        <g stroke="var(--accent)" stroke-width="2" opacity="0.35">
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(0 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(30 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(60 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(90 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(120 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(150 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(180 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(210 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(240 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(270 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(300 200 200)" />
+          <line x1="200" y1="64" x2="200" y2="72" transform="rotate(330 200 200)" />
+        </g>
+
+        <!-- Lapisan 6 & 7: Zona GOOD (±22°) & PERFECT (±8°) -->
+        <path id="zone-good" fill="none" stroke="var(--accent)" stroke-width="18" stroke-linecap="butt" opacity="0.4" />
+        <path id="zone-perfect" fill="none" stroke="var(--perfect)" stroke-width="18" stroke-linecap="butt" />
+
+        <!-- Lapisan 8: Ujung kristal penunjuk target -->
+        <g id="target-tip" transform="rotate(180 200 200)">
+          <polygon points="195,30 205,30 200,40" fill="var(--perfect)" />
+        </g>
+
+        <!-- Lapisan 9: 3 jejak kursor (-5°, -10°, -15°) -->
+        <g id="trail-3" transform="rotate(345 200 200)">
+          <circle cx="200" cy="50" r="3" fill="var(--accent)" opacity="0.15" />
+        </g>
+        <g id="trail-2" transform="rotate(350 200 200)">
+          <circle cx="200" cy="50" r="5" fill="var(--accent)" opacity="0.3" />
+        </g>
+        <g id="trail-1" transform="rotate(355 200 200)">
+          <circle cx="200" cy="50" r="7" fill="var(--accent)" opacity="0.5" />
+        </g>
+
+        <!-- Lapisan 10: Kursor bola kristal (radial halo + inti + bintang 4 sudut) -->
+        <g id="cursor-group" transform="rotate(0 200 200)">
+          <g id="cursor-orb">
+            <circle id="cursor-halo" cx="200" cy="50" r="18" fill="url(#cursor-halo-grad)" opacity="0.85" />
+            <circle cx="200" cy="50" r="9" fill="var(--perfect)" />
+            <polygon points="200,38 203,47 212,50 203,53 200,62 197,53 188,50 197,47" fill="var(--text)" />
+          </g>
+        </g>
+
+        <!-- Lapisan 11: Pusat (Combo, label COMBO, chevron arah) -->
+        <text id="combo-text" x="200" y="192" text-anchor="middle" dominant-baseline="central" class="fill-perfect font-display font-bold tabular-nums text-6xl">0</text>
+        <text x="200" y="232" text-anchor="middle" class="fill-muted font-display font-medium text-xs tracking-[0.25em] uppercase">COMBO</text>
+        <g id="dir-chevron" transform="translate(200 250) scale(1 1)">
+          <polygon points="-7,-6 9,0 -7,6 -3,0" fill="var(--accent)" />
+        </g>
+
+        <!-- Lapisan 12: FX (Ripple, pool 12 serpihan, 3 garis retak) -->
+        <circle id="hit-ripple" cx="200" cy="200" r="150" fill="none" stroke-width="3" opacity="0" />
+        <g id="fx-shards"></g>
+        <g id="fx-cracks" stroke="var(--danger)" stroke-width="2.5" fill="none" opacity="0">
+          <polyline points="200,200 162,155 174,128 134,88" />
+          <polyline points="200,200 252,174 240,146 296,112" />
+          <polyline points="200,200 218,254 196,280 232,332" />
+        </g>
+      </svg>
+
+      <!-- Teks status penilaian (aria-live) -->
+      <div id="judge-text" aria-live="polite" class="pointer-events-none absolute top-2 left-1/2 -translate-x-1/2 font-display font-bold text-lg tracking-widest uppercase opacity-0"></div>
+    </section>
+
+    <!-- 7. Hint di dalam chip --ink agar kontras >= 4.5:1 di atas gradien -->
+    <footer id="hint" class="pb-5 pt-2">
+      <div class="facet-cut bg-rim p-[2px]">
+        <div class="facet-cut bg-ink px-5 py-1.5 font-display font-medium text-xs uppercase tracking-widest text-muted">
+          SPASI / TAP &middot; ESC JEDA
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- 8. Vignette energi rendah & flash MISS -->
+  <div id="vignette" class="fixed inset-0 z-10 pointer-events-none" aria-hidden="true"></div>
+  <div id="miss-flash" class="fixed inset-0 z-10 pointer-events-none bg-danger opacity-0" aria-hidden="true"></div>
+
+  <!-- 9. Sapuan Polarity Flip & bingkai api ungu tepi layar (kiri, bawah, kanan) -->
+  <div id="wipe" class="fixed inset-0 z-30 pointer-events-none bg-ink opacity-0" aria-hidden="true"></div>
+  <div id="purple-flame" class="fixed inset-0 z-[5] pointer-events-none overflow-hidden" aria-hidden="true">
+    <svg viewBox="0 0 1000 600" preserveAspectRatio="none" class="h-full w-full">
+      <!-- Lapisan luar U-shape: tinggi di dinding kiri & kanan, bergelombang di tepi bawah -->
+      <g class="flame-l1" fill="var(--flame-outer)" opacity="0.9">
+        <polygon points="0,600 0,0 32,20 58,155 82,255 112,425 148,495 192,420 238,485 278,385 322,505 372,445 425,520 478,435 535,515 588,438 642,498 698,408 755,485 812,418 862,480 898,320 932,165 965,70 1000,0 1000,600" />
+      </g>
+      <!-- Lapisan tengah bergerak berlawanan fase -->
+      <g class="flame-l2" fill="var(--flame-mid)" opacity="0.92">
+        <polygon points="0,600 0,85 24,130 48,265 78,360 118,475 162,445 208,512 258,430 308,522 362,472 418,542 475,478 532,538 592,468 652,522 712,445 772,510 832,455 882,385 918,255 955,140 1000,65 1000,600" />
+      </g>
+      <!-- Inti lidah api paling terang di tepi bawah, kiri, dan kanan -->
+      <g class="flame-l3" fill="var(--flame-core)" opacity="0.78">
+        <polygon points="0,600 0,210 22,290 52,430 98,520 158,492 222,542 288,485 358,548 432,512 502,555 575,505 648,546 722,490 792,540 860,485 915,380 960,255 1000,185 1000,600" />
+      </g>
+      <!-- Percikan bara melesat naik di sisi kiri, kanan, dan bawah -->
+      <polygon class="flame-spark" style="--fx: 14px; --fr: 50deg;" points="42,185 52,155 62,188" fill="var(--flame-core)" />
+      <polygon class="flame-spark" style="--fx: 20px; --fr: -45deg;" points="88,365 98,338 108,368" fill="var(--flame-mid)" />
+      <polygon class="flame-spark" style="--fx: -10px; --fr: 35deg;" points="258,415 268,388 278,418" fill="var(--flame-core)" />
+      <polygon class="flame-spark" style="--fx: 12px; --fr: -55deg;" points="718,410 728,384 738,412" fill="var(--flame-core)" />
+      <polygon class="flame-spark" style="--fx: -18px; --fr: -50deg;" points="892,340 902,312 912,342" fill="var(--flame-mid)" />
+      <polygon class="flame-spark" style="--fx: -14px; --fr: 60deg;" points="942,165 952,135 962,168" fill="var(--flame-core)" />
+    </svg>
+  </div>
+
+  <!-- 10a. Overlay Menu (komposisi sampul Crystal Shadow) -->
+  <div id="overlay-menu" class="overlay-scrim fixed inset-0 z-20 flex items-center justify-center px-5">
+    <div class="relative w-full max-w-md flex flex-col items-center gap-6">
+      <!-- Panel gelap bertepi magenta-ungu berlapis -->
+      <div class="relative w-full">
+        <div class="facet-panel absolute inset-0 translate-x-[6px] translate-y-[6px] bg-rim-2" aria-hidden="true"></div>
+        <div class="facet-panel relative bg-rim p-[3px] static-glow">
+          <div class="facet-panel bg-ink px-7 pt-9 pb-12 text-center flex flex-col items-center">
+            <h1 class="font-display font-bold uppercase text-6xl sm:text-7xl leading-[0.9] tracking-wider text-perfect select-none" aria-label="PULSE LOCK">
+              <span class="block">
+                <span class="t-char t-1">P</span><span class="t-char t-2">U</span><span class="t-char t-3">L</span><span class="t-char t-4">S</span><span class="t-char t-5">E</span>
+              </span>
+              <span class="block mt-1">
+                <span class="t-char t-2">L</span><span class="t-char t-3">O</span><span class="t-char t-4">C</span><span class="t-char t-1">K</span>
+              </span>
+            </h1>
+
+            <!-- Bola kristal berdenyut di bawah judul -->
+            <svg viewBox="0 0 80 80" class="menu-orb mt-5 h-14 w-14" aria-hidden="true">
+              <circle cx="40" cy="40" r="28" fill="url(#cursor-halo-grad)" opacity="0.85" />
+              <circle cx="40" cy="40" r="13" fill="var(--perfect)" />
+              <polygon points="40,22 44,36 58,40 44,44 40,58 36,44 22,40 36,36" fill="var(--text)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Tagline miring 3 baris menimpa pojok kanan bawah panel -->
+        <p class="pointer-events-none absolute -bottom-5 right-3 sm:right-5 font-display font-bold uppercase text-accent text-lg sm:text-xl leading-tight text-left -skew-x-6 -rotate-6">
+          <span class="block bg-ink px-2">OUTRUN THE</span>
+          <span class="block bg-ink px-2">FADING</span>
+          <span class="block bg-ink px-2">LIGHT</span>
+        </p>
+      </div>
+
+      <!-- Chip high score -->
+      <div class="mt-4 facet-cut bg-rim p-[2px]">
+        <div class="facet-cut bg-ink px-5 py-2 flex items-center gap-4">
+          <span class="font-medium text-xs uppercase tracking-widest text-accent">HIGH SCORE</span>
+          <span id="menu-highscore" class="font-bold tabular-nums text-2xl text-perfect">0</span>
+        </div>
+      </div>
+
+      <!-- Tombol MULAI berfaset dengan pembungkus drop-shadow statis -->
+      <div class="static-glow">
+        <button id="btn-start" type="button" class="facet-cut cursor-pointer min-h-[48px] min-w-[200px] bg-perfect text-ink font-display font-bold text-lg tracking-widest px-8 py-3 hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent transition">
+          MULAI
+        </button>
+      </div>
+
+      <p class="facet-cut bg-ink px-4 py-1 text-xs font-medium uppercase tracking-widest text-muted">
+        SPASI / TAP LAYAR / ENTER
+      </p>
+    </div>
+  </div>
+
+  <!-- 10b. Overlay Pause -->
+  <div id="overlay-pause" class="hidden overlay-scrim fixed inset-0 z-20 flex items-center justify-center px-5">
+    <div class="relative w-full max-w-xs">
+      <div class="facet-panel absolute inset-0 translate-x-[5px] translate-y-[5px] bg-rim-2" aria-hidden="true"></div>
+      <div class="facet-panel relative bg-rim p-[3px] static-glow">
+        <div class="facet-panel bg-ink px-8 py-9 flex flex-col items-center gap-6 text-center">
+          <h2 class="font-display font-bold uppercase text-3xl tracking-widest text-perfect">JEDA</h2>
+          <div class="static-glow">
+            <button id="btn-resume" type="button" class="facet-cut cursor-pointer min-h-[48px] min-w-[180px] bg-perfect text-ink font-display font-bold text-base tracking-widest px-7 py-3 hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent transition">
+              LANJUT
+            </button>
+          </div>
+          <p class="text-xs font-medium uppercase tracking-widest text-muted">ESC</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10c. Overlay Game Over -->
+  <div id="overlay-gameover" class="hidden overlay-scrim fixed inset-0 z-20 flex items-center justify-center px-5">
+    <div id="gameover-card" class="relative w-full max-w-sm">
+      <div class="facet-panel absolute inset-0 translate-x-[6px] translate-y-[6px] bg-rim-2" aria-hidden="true"></div>
+      <div class="facet-panel relative bg-rim p-[3px] static-glow">
+        <div class="facet-panel bg-ink px-7 py-9 flex flex-col items-center gap-6 text-center">
+          <h2 class="font-display font-bold uppercase text-3xl sm:text-4xl tracking-wider text-danger">LIGHT FADED</h2>
+
+          <div class="w-full grid grid-cols-2 gap-3">
+            <div class="facet-cut bg-ink-2 px-3 py-3 flex flex-col items-center">
+              <span class="text-xs font-medium uppercase tracking-widest text-accent">SCORE</span>
+              <span id="gameover-score" class="font-bold tabular-nums text-2xl sm:text-3xl text-perfect">0</span>
+            </div>
+            <div class="facet-cut bg-ink-2 px-3 py-3 flex flex-col items-center">
+              <span class="text-xs font-medium uppercase tracking-widest text-accent">MAX COMBO</span>
+              <span id="gameover-maxcombo" class="font-bold tabular-nums text-2xl sm:text-3xl text-perfect">0</span>
+            </div>
+          </div>
+
+          <div class="w-full facet-cut bg-ink-2 px-4 py-2.5 flex items-center justify-between">
+            <span class="text-xs font-medium uppercase tracking-widest text-accent">HIGH</span>
+            <div class="flex items-center gap-2">
+              <span id="gameover-highscore" class="font-bold tabular-nums text-xl text-perfect">0</span>
+              <span id="gameover-newrecord" class="hidden facet-cut bg-perfect text-ink px-2.5 py-0.5 text-xs font-bold tracking-widest">BARU</span>
+            </div>
+          </div>
+
+          <div class="static-glow">
+            <button id="btn-restart" type="button" class="facet-cut cursor-pointer min-h-[48px] min-w-[200px] bg-perfect text-ink font-display font-bold text-base tracking-widest px-7 py-3 hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent transition">
+              MAIN LAGI
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
